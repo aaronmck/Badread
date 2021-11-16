@@ -108,6 +108,8 @@ def simulate_subparser(subparsers):
     sim_args.add_argument('--seed', type=int,
                           help='Random number generator seed for deterministic output (default: '
                                'different output each time)')
+    sim_args.add_argument('--cap_at_length', action='store_true', default=False,
+                          help='cap reads at their respective sequence length for circular inputs')
 
     problem_args = group.add_argument_group('Adapters',
                                             description='Controls adapter sequences on the start '

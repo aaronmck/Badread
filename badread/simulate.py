@@ -158,7 +158,7 @@ def get_fragment(frag_lengths, ref_seqs, rev_comp_ref_seqs, ref_contigs, ref_con
     # repeatedly until we get a result.
     for _ in range(1000):
         seq, info = get_real_fragment(fragment_length, ref_seqs, rev_comp_ref_seqs, ref_contigs,
-                                      ref_contig_weights, ref_circular)
+                                      ref_contig_weights, ref_circular, args)
         if seq != '':
             return seq, info
     sys.exit('Error: failed to generate any sequence fragments - are your read lengths '
@@ -181,7 +181,7 @@ def get_fragment_type(args):
 
 
 def get_real_fragment(fragment_length, ref_seqs, rev_comp_ref_seqs, ref_contigs,
-                      ref_contig_weights, ref_circular):
+                      ref_contig_weights, ref_circular, args):
 
     if len(ref_contigs) == 1:
         contig = ref_contigs[0]
@@ -200,11 +200,13 @@ def get_real_fragment(fragment_length, ref_seqs, rev_comp_ref_seqs, ref_contigs,
     if fragment_length >= len(seq) and not ref_circular[contig]:
         info.append('0-' + str(len(seq)))
         return seq, info
-
+        
     # If the reference contig is circular and the fragment length is too long, then we fail to get
-    # the read.
-    if fragment_length > len(seq) and ref_circular[contig]:
+    # the read. If the user has set 'cap_at_length' then we allow this to be the full reference
+    if fragment_length > len(seq) and ref_circular[contig] and (not args.cap_at_length):
         return '', ''
+    elif fragment_length > len(seq) and ref_circular[contig] and args.cap_at_length:
+        fragment_length = len(seq)
 
     start_pos = random.randint(0, len(seq)-1)
     end_pos = start_pos + fragment_length
