@@ -109,7 +109,8 @@ def simulate_subparser(subparsers):
                           help='Random number generator seed for deterministic output (default: '
                                'different output each time)')
     sim_args.add_argument('--cap_at_length', action='store_true', default=False,
-                          help='cap reads at their respective sequence length for circular inputs')
+                          help='When set, any created fragments for circular contigs that exceed '
+                          'the reference length will be truncated to the reference length')
 
     problem_args = group.add_argument_group('Adapters',
                                             description='Controls adapter sequences on the start '
