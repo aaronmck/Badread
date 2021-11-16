@@ -202,11 +202,13 @@ def get_real_fragment(fragment_length, ref_seqs, rev_comp_ref_seqs, ref_contigs,
         return seq, info
         
     # If the reference contig is circular and the fragment length is too long, then we fail to get
-    # the read. If the user has set 'cap_at_length' then we allow this to be the full reference
-    if fragment_length > len(seq) and ref_circular[contig] and (not args.cap_at_length):
-        return '', ''
-    elif fragment_length > len(seq) and ref_circular[contig] and args.cap_at_length:
-        fragment_length = len(seq)
+    # the read. If the user has set 'cap_at_length' then we allow this to be the full 
+    # circular reference
+    if fragment_length > len(seq) and ref_circular[contig]:
+        if args.cap_at_length:
+            fragment_length = len(seq)
+        else:
+            return '', ''
 
     start_pos = random.randint(0, len(seq)-1)
     end_pos = start_pos + fragment_length
