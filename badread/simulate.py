@@ -23,7 +23,8 @@ from .misc import load_fasta, get_random_sequence, reverse_complement, random_ch
     float_to_str, str_is_int, identity_from_edlib_cigar
 from .error_model import ErrorModel
 from .qscore_model import QScoreModel, get_qscores
-from .fragment_lengths import FragmentLengths
+from .fragment_lengths import FragmentLengths, EmpericalFragmentLengths
+
 from .identities import Identities
 from .version import __version__
 from . import settings
@@ -36,7 +37,14 @@ def simulate(args, output=sys.stderr):
         np.random.seed(args.seed)
     ref_seqs, ref_depths, ref_circular = load_reference(args.reference, output)
     rev_comp_ref_seqs = {name: reverse_complement(seq) for name, seq in ref_seqs.items()}
+
     frag_lengths = FragmentLengths(args.mean_frag_length, args.frag_length_stdev, output)
+    if args.emp_fragmentsemp_fragments is not None:
+        split_values = args.emp_fragmentsemp_fragments.split(",")
+        frag_lengths = EmpericalFragmentLengths(split_values[0],split_values[1])
+        
+
+        
     adjust_depths(ref_seqs, ref_depths, ref_circular, frag_lengths, args)
     identities = Identities(args.mean_identity, args.identity_stdev, args.max_identity, output)
     error_model = ErrorModel(args.error_model, output)

@@ -111,6 +111,8 @@ def simulate_subparser(subparsers):
     sim_args.add_argument('--cap_at_length', action='store_true', default=False,
                           help='When set, any created fragments for circular contigs that exceed '
                           'the reference length will be truncated to the reference length')
+    sim_args.add_argument('--emp_fragmentsemp_fragments', type=str,
+                          help='use empircal values from the a pair of files, the first sampled [0,1] lengths, and the second a fasta of the total plasmid')
 
     problem_args = group.add_argument_group('Adapters',
                                             description='Controls adapter sequences on the start '

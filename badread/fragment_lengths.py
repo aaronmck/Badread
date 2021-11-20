@@ -18,13 +18,14 @@ import numpy as np
 import scipy.special
 import scipy.stats
 import sys
+import random
 from .quickhist import quickhist_gamma
 from .misc import float_to_str, print_in_two_columns
 
 
 class FragmentLengths(object):
 
-    def __init__(self, mean, stdev, output=sys.stderr):
+    def __init__(self, mean, stdev, output=sys.stderr, as_true_beta=False):
         self.mean = mean
         self.stdev = stdev
         print('', file=output)
@@ -115,3 +116,26 @@ def inc_gamma_ln(a, b):
     Natural log of the inc_gamma function.
     """
     return scipy.special.gammaln(a) + np.log(1-scipy.stats.gamma.cdf(b, a))
+
+
+
+class EmpericalFragmentLengths(object):
+
+    def __init__(self, fragment_file, plasmid_file):
+        self.emp_values = []
+        frag_file = open(fragment_file,"r")
+        for line in frag_file:
+            self.emp_values.append(float(line.strip()))
+        
+        plasmid = open(plasmid_file,"r")
+        header = plasmid.readline()
+        self.plasmid_length = 0
+        for line in plasmid:
+            self.plasmid_length += len(line.strip())
+
+
+    def get_fragment_length(self):
+        vl = random.sample(self.emp_values,1)
+        # print(int(vl[0] * self.plasmid_length))
+        return(int(vl[0] * self.plasmid_length))
+
